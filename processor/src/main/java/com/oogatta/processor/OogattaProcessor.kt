@@ -25,6 +25,7 @@ class OogattaProcessor : BasicAnnotationProcessor() {
 
     override fun initSteps(): MutableIterable<ProcessingStep> {
         val outputDirectory = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
+            ?.replace("kaptKotlin", "kapt")
             ?.let { File(it) }
             ?: throw IllegalArgumentException("No output directory!")
 
