@@ -53,8 +53,11 @@ class OogattaProcessingStep(private val elements: Elements, private val messager
                     throw Exception("@${Oogatta::class.java.simpleName} can annotate class type.")
                 }
 
+                val annotatedClassName = annotatedElement.simpleName.toString().trimDollarIfNeeded()
+
+
                 val klass = TypeSpec
-                    .classBuilder("OogattaHelper")
+                    .classBuilder("${annotatedClassName}Helper")
                     .build()
 
                 KotlinFile.builder("com.oogatta.helper", klass.name!!)
@@ -68,4 +71,9 @@ class OogattaProcessingStep(private val elements: Elements, private val messager
 
         return mutableSetOf()
     }
+    private fun String.trimDollarIfNeeded(): String {
+        val index = indexOf("$")
+        return if (index == -1) this else substring(0, index)
+    }
+
 }
