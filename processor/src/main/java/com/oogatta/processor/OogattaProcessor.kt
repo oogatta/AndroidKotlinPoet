@@ -11,6 +11,7 @@ import javax.annotation.processing.Messager
 import javax.annotation.processing.Processor
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
+import javax.lang.model.element.ElementKind
 import javax.lang.model.util.Elements
 
 @AutoService(Processor::class)
@@ -46,14 +47,24 @@ class OogattaProcessingStep(private val elements: Elements, private val messager
     override fun process(elementsByAnnotation: SetMultimap<Class<out Annotation>, Element>?): MutableSet<Element> {
         elementsByAnnotation ?: return mutableSetOf()
 
-        val klass = TypeSpec
-            .classBuilder("OogattaHelper")
-            .build()
+        try {
+            for (annotatedElement in elementsByAnnotation[Oogatta::class.java]) {
+                if (annotatedElement.kind !== ElementKind.CLASS) {
+                    throw Exception("@${Oogatta::class.java.simpleName} can annotate class type.")
+                }
 
-        KotlinFile.builder("com.oogatta.helper", klass.name!!)
-            .addType(klass)
-            .build()
-            .writeTo(outputDir)
+                val klass = TypeSpec
+                    .classBuilder("OogattaHelper")
+                    .build()
+
+                KotlinFile.builder("com.oogatta.helper", klass.name!!)
+                    .addType(klass)
+                    .build()
+                    .writeTo(outputDir)
+            }
+        } catch (e: Exception) {
+            throw e
+        }
 
         return mutableSetOf()
     }
