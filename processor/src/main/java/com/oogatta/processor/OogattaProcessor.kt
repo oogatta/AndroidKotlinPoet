@@ -4,7 +4,7 @@ import com.google.auto.common.BasicAnnotationProcessor
 import com.google.auto.service.AutoService
 import com.google.common.collect.SetMultimap
 import com.oogatta.annotation.Oogatta
-import com.squareup.kotlinpoet.KotlinFile
+import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 import javax.annotation.processing.Messager
@@ -60,7 +60,7 @@ class OogattaProcessingStep(private val elements: Elements, private val messager
                     .classBuilder("${annotatedClassName}Helper")
                     .build()
 
-                KotlinFile.builder("com.oogatta.helper", klass.name!!)
+                FileSpec.builder("com.oogatta.helper", klass.name!!)
                     .addType(klass)
                     .build()
                     .writeTo(outputDir)
